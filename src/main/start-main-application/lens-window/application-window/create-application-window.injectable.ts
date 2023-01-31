@@ -6,6 +6,7 @@ import { getInjectable } from "@ogre-tools/injectable";
 import createLensWindowInjectable from "./create-lens-window.injectable";
 import lensProxyPortInjectable from "../../../lens-proxy/lens-proxy-port.injectable";
 import isMacInjectable from "../../../../common/vars/is-mac.injectable";
+import isLinuxInjectable from "../../../../common/vars/is-linux.injectable";
 import waitUntilBundledExtensionsAreLoadedInjectable from "./wait-until-bundled-extensions-are-loaded.injectable";
 import { applicationWindowInjectionToken } from "./application-window-injection-token";
 import emitAppEventInjectable from "../../../../common/app-event-bus/emit-event.injectable";
@@ -22,6 +23,7 @@ const createApplicationWindowInjectable = getInjectable({
       instantiate: (di) => {
         const createLensWindow = di.inject(createLensWindowInjectable);
         const isMac = di.inject(isMacInjectable);
+        const isLinux = di.inject(isLinuxInjectable);
         const applicationName = di.inject(appNameInjectable);
         const waitUntilBundledExtensionsAreLoaded = di.inject(waitUntilBundledExtensionsAreLoadedInjectable);
         const lensProxyPort = di.inject(lensProxyPortInjectable);
@@ -36,7 +38,7 @@ const createApplicationWindowInjectable = getInjectable({
             url: `http://localhost:${lensProxyPort.get()}`,
           }),
           resizable: true,
-          windowFrameUtilitiesAreShown: isMac,
+          windowFrameUtilitiesAreShown: isMac || isLinux,
           titleBarStyle: isMac ? "hiddenInset" : "hidden",
           centered: false,
           onFocus: () => {
